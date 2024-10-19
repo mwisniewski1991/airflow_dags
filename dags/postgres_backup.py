@@ -1,5 +1,6 @@
 from airflow.decorators import dag, task
 from airflow.hooks.postgres_hook import PostgresHook
+from airflow.providers.sftp.hooks.sftp import SFTPHook
 from airflow.sensors.base import PokeReturnValue
 from datetime import datetime
 
@@ -56,8 +57,33 @@ def postgresql_backup_dag():
         backup_command = f'pg_dump "{postgres_uri}" > {backup_directory}/{backup_file_name}'
         subprocess.Popen(backup_command, shell=True)
 
+        return {'backup_directory': backup_directory, 'backup_file_name': backup_file_name}
+
+    @task()
+    def send_file_to_nas(backup_info):
+        
+        backup_directory = backup_info['backup_directory']
+        backup_file_name = backup_info['backup_file_name']
+        remote_directory = '/path/to/remote/directory'
+    
+        local_path = f'{backup_directory}/{backup_file_name}'
+        remote_path = f'{remote_directory}{backup_file_name}'
+
+        sftp_hook = SFTPHook(ssh_conn_id='sftp_connection_id')
+
+        try:
+            sftp_hook.store_file(remote_path, local_path)
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            raise e
+        finally:
+            sftp_hook.close_conn()
+
+
     checking_result = check_last_update()
-    backup_postgresql(checking_result)
+    backup_info = backup_postgresql(checking_result)
+    send_file_to_nas(backup_info)
 
 
 postgresql_backup_dag()
