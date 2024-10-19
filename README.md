@@ -14,6 +14,7 @@ Verify database modifications and create a backup if changes are detected. The D
 - PostgreSQL database with a dedicated user
 - Defined Airflow PostgreSQL connection
 - Create temp directory
+- SFTP connection to NAS or other storage.
 
 **Task list:**
 - check_last_update
@@ -31,6 +32,11 @@ Verify database modifications and create a backup if changes are detected. The D
         - Use the subprocess library to execute the pg_dump command
         - Command to execute:
             - pg_dump postgresql://user:password@host:port/database_name > /path_to_backup/file_name.sql
+
+- send_file_to_nas
+    - Type: Task
+    - Function:
+        - Send the backup file to the NAS using the SFTP connection
 
 **Note**:
 - File with backup is stored in the `temp` directory.
