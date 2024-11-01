@@ -5,6 +5,19 @@ Repository containing DAG examples demonstrating Airflow functionalities and fea
 
 ## DAGs
 
+### iam_failure
+**Description**:
+Raise an exception to test Airflow functionality.
+
+**Purpose**:
+- None
+
+**Task list**:
+- failure_task
+    - Type: Task
+    - Function:
+        - Raise an exception
+
 ### postgresql_backup
 
 **Description**:
