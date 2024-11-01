@@ -54,3 +54,17 @@ Verify database modifications and create a backup if changes are detected. The D
 **Note**:
 - File with backup is stored in the `temp` directory.
 - File name is generated using a CET timestamp of the backup creation.
+
+
+## Plugins
+
+### dag_failure_listener
+**Description**:
+Send a notifications through ntfy.sh when a DAG fails. Message contains information about DAG ID, Task ID and end date.
+
+**Prerequisites**:
+- Create topic on ntfy.sh,
+- Create Airflow HTTP connection:
+    - with extra field add:
+        - `topic_one`: `topic_name`
+        - `token`: `token`
